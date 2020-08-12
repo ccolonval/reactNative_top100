@@ -7,23 +7,33 @@ import {
 	View,
 	Text,
 	StatusBar,
+	FlatList
   } from 'react-native';
+
+import { ListItem } from 'react-native-elements';
   
-import {
-	Header,
-	LearnMoreLinks,
-	Colors,
-	DebugInstructions,
-	ReloadInstructions,
-  } from 'react-native/Libraries/NewAppScreen';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+
 import PropTypes from 'prop-types';
-import { mainDateAction, mainOtherAction } from "../../actions/main";
-import { Button } from 'react-native-paper';
+
+import { 
+	mainDateAction, 
+	mainOtherAction } from "../../actions/main";
+
+import { 
+	Searchbar, 
+	Appbar,
+	List} from 'react-native-paper';
 
 const initialState = {
 	stateMessage: "hello world",
-	counter: 0
+	counter: 0,
+	query: "",
+	toggle: "web",
+	index: 0,
+	routes: [],
 };
+
 class Main extends PureComponent {
 
 	state = {...initialState}
@@ -48,50 +58,104 @@ class Main extends PureComponent {
 	handleReduxClickProp = () => {
 		this.props.propMessage  = "This prop value has been changed within the component";
 	};
+
+	onChangeSearch = query => this.setState({ query });
+	onChangeToggle = toggle => this.setState({ toggle });
+	onBottonIndexChange = index => this.setState({ index });
+
+	keyExtractor = (item, index) => index.toString()
+
+	renderItem = ({ item }) => (
+		<ListItem
+			leftAvatar={{ source: { uri: item.image } }}
+			title={item.album}
+			subtitle={item.artist+ ' ' + item.release}
+			bottomDivider
+		/>
+	  )
 	
 	render() {
-		const  { stateMessage } = this.state;
+		const  { query, toggle, stateMessage } = this.state;
 		const  { myOther, myDate, propMessage } = this.props;
+
+		const list = [
+			{
+			  album: 'albumName 1',
+			  albumImage: 'https://is2-ssl.mzstatic.com/image/thumb/Music113/v4/4e/5f/66/4e5f66a5-ba02-313f-f50a-d3e35aeec864/20UMGIM52447.rgb.jpg/55x55bb.png',
+			  artist: 'artistName',
+			  release: '####'
+			},
+			{
+			  album: 'albumName 2',
+			  image: 'https://is2-ssl.mzstatic.com/image/thumb/Music113/v4/4e/5f/66/4e5f66a5-ba02-313f-f50a-d3e35aeec864/20UMGIM52447.rgb.jpg/55x55bb.png',
+			  artist: 'artistName',
+			  release: '####',
+			  cost: '$##.##'
+			},
+			{
+			  album: 'albumName 3',
+			  image: 'https://is2-ssl.mzstatic.com/image/thumb/Music113/v4/4e/5f/66/4e5f66a5-ba02-313f-f50a-d3e35aeec864/20UMGIM52447.rgb.jpg/55x55bb.png',
+			  artist: 'artistName',
+			  release: '####',
+			  cost: '$##.##'
+			},
+			{
+			  album: 'albumName 4',
+			  image: 'https://is2-ssl.mzstatic.com/image/thumb/Music113/v4/4e/5f/66/4e5f66a5-ba02-313f-f50a-d3e35aeec864/20UMGIM52447.rgb.jpg/55x55bb.png',
+			  artist: 'artistName',
+			  release: '####',
+			  cost: '$##.##'
+			},
+			{
+			  album: 'albumName 5',
+			  image: 'https://is2-ssl.mzstatic.com/image/thumb/Music113/v4/4e/5f/66/4e5f66a5-ba02-313f-f50a-d3e35aeec864/20UMGIM52447.rgb.jpg/55x55bb.png',
+			  artist: 'artistName',
+			  release: '####',
+			  cost: '$##.##'
+			},
+		  ]
+
 		return (
 			<View>   
 				<StatusBar barStyle="dark-content" />
+				<Appbar.Header>
+					{/*<Appbar.BackAction onPress={() => console.log('Pressed go back')} />*/}
+					<Appbar.Content title="Top 100 Albums" subtitle="iTunes" />
+					{/*<Appbar.Action icon="magnify" onPress={() => console.log('Pressed search')} />*/}
+					<Appbar.Action
+					style={styles.web}
+					icon="web"
+					onPress={() => console.log('Pressed web')}
+					/>
+					{/*<Appbar.Action
+					style={styles.heart}
+					icon="heart"
+					onPress={() => console.log('Pressed heart')}
+					/>*/}
+				</Appbar.Header>
+				<Text>{query}</Text>
+				<Searchbar
+				placeholder="Search"
+				onChangeText={this.onChangeSearch}
+				value={query}/>
 				<SafeAreaView>
 					<ScrollView
 					contentInsetAdjustmentBehavior="automatic"
 					style={styles.scrollView}>
-					<Header />
-					{global.HermesInternal == null ? null : (
-						<View style={styles.engine}>
-						<Text style={styles.footer}>Engine: Hermes</Text>
-						</View>
-					)}
 					<View style={styles.body}>
-						<View style={styles.sectionContainer}>
-						<Text style={styles.sectionTitle}>Step One</Text>
-						<Text style={styles.sectionDescription}>
-							Edit <Text style={styles.highlight}>App.js</Text> to change this
-							screen and then come back to see your edits.
-						</Text>
-						</View>
-						<View style={styles.sectionContainer}>
-						<Text style={styles.sectionTitle}>See Your Changes</Text>
-						<Text style={styles.sectionDescription}>
-							<ReloadInstructions />
-						</Text>
-						</View>
-						<View style={styles.sectionContainer}>
-						<Text style={styles.sectionTitle}>Debug</Text>
-						<Text style={styles.sectionDescription}>
-							<DebugInstructions />
-						</Text>
-						</View>
-						<View style={styles.sectionContainer}>
-						<Text style={styles.sectionTitle}>Learn More</Text>
-						<Text style={styles.sectionDescription}>
-							Read the docs to discover what to do next:
-						</Text>
-						</View>
-						<LearnMoreLinks />
+					{
+						list.map((item, i) => (
+						<ListItem
+							key={i}
+							leftAvatar={{ source: { uri: item.image } }}
+							onPress={() => this.props.navigation.navigate("Selected")}
+							title={item.album}
+							subtitle={item.artist + ' ' + item.release}
+							bottomDivider
+							chevron
+						/>
+						))
+					}
 					</View>
 					</ScrollView>
 				</SafeAreaView>
@@ -110,7 +174,8 @@ const mapStateToProps = (state, ownProps) => {
 		//appstate.reducer.stateProperty
 		myDate: state.main.myDate,
 		myOther: state.main.myOther,
-		propMessage: ownProps.propMessage
+		propMessage: ownProps.propMessage,
+		navigation: ownProps.navigation
 	};
 };
 
@@ -123,38 +188,8 @@ const styles = StyleSheet.create({
 	scrollView: {
 	  backgroundColor: Colors.lighter,
 	},
-	engine: {
-	  position: 'absolute',
-	  right: 0,
-	},
 	body: {
 	  backgroundColor: Colors.white,
-	},
-	sectionContainer: {
-	  marginTop: 32,
-	  paddingHorizontal: 24,
-	},
-	sectionTitle: {
-	  fontSize: 24,
-	  fontWeight: '600',
-	  color: Colors.black,
-	},
-	sectionDescription: {
-	  marginTop: 8,
-	  fontSize: 18,
-	  fontWeight: '400',
-	  color: Colors.dark,
-	},
-	highlight: {
-	  fontWeight: '700',
-	},
-	footer: {
-	  color: Colors.dark,
-	  fontSize: 12,
-	  fontWeight: '600',
-	  padding: 4,
-	  paddingRight: 12,
-	  textAlign: 'right',
 	},
   });
 
