@@ -10,9 +10,9 @@ The application currently uses the following:
 - React Native navigation libraries
 - Searching
 - Selected Album
+- Finalize UI layout
+- New feature
 
 # Pending:
-- Finalize UI layout
 - include API feed
 - Create and implement tests using Jest
-- New feature
