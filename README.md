@@ -7,10 +7,12 @@ The application currently uses the following:
 
 - React Native Elements and React Native Paper for UI
 - Redux Thunk for local/global state
+- React Native navigation libraries
+- Searching
+- Selected Album
 
 # Pending:
-- React Native navigation libraries
+- Finalize UI layout
+- include API feed
 - Create and implement tests using Jest
-- Allow the top 100 to be searchable
-- Allow the user to see more information about a selected Album
 - New feature
