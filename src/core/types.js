@@ -1,3 +1,1 @@
-export const INITIAL = 'INITIAL';
-export const RELOAD = 'RELOAD';
-export const SWITCH_MODAL_VISIBILITY = 'SWITCH_MODAL_VISIBILITY';
+export const GET_DATA_FEED = 'GET_DATA_FEED';

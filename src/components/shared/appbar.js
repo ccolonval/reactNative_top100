@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Appbar, Menu, Divider } from 'react-native-paper'
 import { connect } from "react-redux";
 
@@ -16,7 +16,7 @@ class AppBar extends PureComponent {
 
     render(){
 
-        let title, profileAction, backAction, menu;
+        let title, backAction, menu;
 
         let { visible } = this.state;
 

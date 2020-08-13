@@ -1,23 +1,16 @@
-//external imports
 import React, { PureComponent } from "react";
     
 import {
-    SafeAreaView,
     StyleSheet,
-    ScrollView,
-    View,
-    TouchableOpacity, 
-    TouchableHighlight, 
-    Image } from 'react-native';
+    View
+} from 'react-native';
 
 import { connect } from "react-redux";
 import Appbar from './shared/appbar';
 import { BottomNavigation, Text} from 'react-native-paper';
-import { Icon as IconP } from 'react-native-paper';
-import { Icon, ListItem } from 'react-native-elements';
+import { Icon } from 'react-native-elements';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
-//this component initial state
 const initialState = {
     index: 0,
     routes: [
@@ -51,13 +44,10 @@ class Selected extends PureComponent {
 		return <Text style={{color:"#4A64AA", alignSelf:"center"}}  >{route.title}</Text>
 	};
     
-    //Renders the template component
 	render() {
 
-        //get the component properties and state using destructuring
         let { index } = this.state;
         
-		//return JSX transpiled component
 		return (
 			<View style={styles.root}>
 				<Appbar 
@@ -125,11 +115,6 @@ const styles = StyleSheet.create({
         bottom: 25,
         zIndex: 10 
     },
-    fab: {
-        position: 'absolute',
-        margin: 16,
-        bottom: 0,
-    },
 	container: {
 		backgroundColor: 'white'
 	},
@@ -139,32 +124,6 @@ const styles = StyleSheet.create({
 		padding: 20,
 		fontSize: 18,
 		fontWeight: "100"
-	},
-	rowFront: {
-		backgroundColor: '#FFF',
-		borderBottomColor: '#98a7d2',//9199b0, A9A9A9, 
-		borderBottomWidth: StyleSheet.hairlineWidth,
-		justifyContent: 'center'
-	},
-	rowBack: {
-		alignItems: 'center',
-		backgroundColor: '#DDD',
-		flex: 1,
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		paddingLeft: 15,
-	},
-	backRightBtn: {
-		alignItems: 'center',
-		bottom: 0,
-		justifyContent: 'center',
-		position: 'absolute',
-		top: 0,
-		width: 75,
-	},
-	backRightBtnRight: {
-		backgroundColor: '#cc0000',
-		right: 0,
 	},
 	bottomNavigation: {
         paddingBottom: 40,
@@ -182,7 +141,6 @@ const styles = StyleSheet.create({
     library: {
     },
     chart:{
-      
     },
 });
 

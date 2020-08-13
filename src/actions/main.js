@@ -1,24 +1,12 @@
-export const mainDateAction = date => dispatch => {
-	dispatch({
-		type: "SET_DATE",
-		payload: date
-	});
-};
+import{ GET_DATA_FEED } from '../core/types';
 
-export const mainOtherAction = () => dispatch => {
-	dispatch({
-		type: "SET_OTHER"
-	});
-};
+import axios from "axios";
 
-export const mainInitialAction = () => dispatch => {
+//improve loading url
+export const getDataFeed = () => async (dispatch, getState) => {
+	const response = await axios.get("https://itunes.apple.com/us/rss/topalbums/limit=100/json");
 	dispatch({
-		type: "INITIAL"
-	});
-};
-
-export const mainReloadAction = () => dispatch => {
-	dispatch({
-		type: "RELOAD"
+		type: GET_DATA_FEED,
+		payload: response.data.feed.entry
 	});
 };

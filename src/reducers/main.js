@@ -1,29 +1,16 @@
+import {
+    GET_DATA_FEED,
+} from '../core/types';
+
 const initialState = {
-    myOther: 'hello',
-    myDate: new Date(),
-    myList: {},
+    dataFeed: [],
 };
 export default (state = initialState, action) => {
     switch (action.type) {
-        case 'SET_DATE':
+        case GET_DATA_FEED:
             return {
                 ...state,
-                myDate: action.payload
-            }
-        case 'SET_OTHER':
-            return {
-                ...state,
-                myOther: state.myOther + " and.... hello again"
-            }
-        case 'INITIAL':
-            return {
-                ...state,
-                myList: {}
-            }
-        case 'RELOAD':
-            return {
-                ...state,
-                myList: {}
+                dataFeed: action.payload
             }
         default:
             return state
