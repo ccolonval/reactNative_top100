@@ -12,7 +12,8 @@ The application currently uses the following:
 - Selected Album
 - Finalize UI layout
 - New feature
+- include API feed
 
 # Pending:
-- include API feed
+- Finalize UI layout for selected album
 - Create and implement tests using Jest
