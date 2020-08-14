@@ -1,11 +1,30 @@
 import React, { PureComponent } from "react";
-import {
-    StyleSheet,
-	View,
-	Text,
-} from 'react-native';
 import { connect } from "react-redux";
+
+import {
+	StyleSheet,
+	SafeAreaView,
+	ScrollView,
+	Image,
+	Animated,
+	Easing
+} from 'react-native';
+
+import { 
+	ListItem,
+	Left, 
+	Body, 
+	Right, 
+	Text, 
+	Thumbnail, 
+	Badge,
+	Drawer
+} from "native-base";
+
+import PropTypes from 'prop-types';
 import Appbar from './shared/appbar';
+import { getSongs, getHits } from '../actions/selected';
+import { View } from 'react-native-animatable';
 import { BottomNavigation} from 'react-native-paper';//remove, simplify with 1 UI library if possible
 import { Icon } from 'react-native-elements';//use native-base
 
@@ -13,45 +32,144 @@ const initialState = {
     index: 0,
     routes: [
         { key: 'info', title: 'info', icon: 'account-box' },
-        { key: 'charts', title: 'charts', icon: 'format-list-numbered' },
-        { key: 'library', title: 'library', icon: 'library-music' },
+        { key: 'songs', title: 'songs', icon: 'format-list-numbered' },
+        { key: 'hits', title: 'hits', icon: 'library-music' },
 	],
+	songs : [],
+	hits: [],
+	animateItem : new Animated.Value(0)
 };
 
 class Selected extends PureComponent {
 
 	state = {...initialState}
 
-	//continue template
+	componentDidMount = async()=>{
+		//start loading
+		this.props.getSongs(this.props.selected['id']['attributes']['im:id']);
+		this.props.getHits(this.props.selected['im:artist']['attributes']['href'].split('/').slice(-1)[0].split('?')[0]);
+		Animated.timing(this.state.animateItem, {
+			toValue: 1,
+			duration: 1000,
+			delay: 200,
+			easing: Easing.bounce,
+			useNativeDriver: true
+		}).start()
+	}
+
+	transformY() {
+		return {
+		  translateY: this.state.animateItem.interpolate({
+			inputRange: [0, 0.5, 1],
+			outputRange: [700, 300, 0]
+		  })
+		}
+	  }
+	  
 	InfoRoute = () => {
-		const { selected } = this.props;
-		return <Text>InfoRoute for {selected['im:name']['label']}</Text>;
-		//details regarding the album artist
-	};
-	
-	//continue template
-	LibraryRoute = () => {
-		const { selected } = this.props;
-		return <Text>LibraryRoute for {selected['im:name']['label']}</Text>;
-		//details regarding the selected album
+		return(
+			<View style={styles.InfoRoute}>
+				<Image style={{ alignSelf:"center", width: 200, height: 200, marginTop: 85, marginBottom: 50 }} source={{uri: this.props.selected['im:image'][2]['label']}} />
+				<Text style={{ fontSize: 18, textAlign:"center", letterSpacing: 2.5 }}>
+					{'Name: ' + this.props.selected['im:name']['label']}
+					{'\nArtist: ' + this.props.selected['im:artist']['label']}
+					{'\nRelease Date: ' + this.props.selected['im:releaseDate']['attributes']['label']}
+					{'\nPrice: ' + this.props.selected['im:price']['label']}
+					{'\nCategory: ' + this.props.selected['category']['attributes']['label']}
+				</Text>
+			</View>
+		);
 	};
 
-	//continue template, comparing chart scores from 3 API feeds (GooglePlay, iTunes and Spotufy)
-	ChartsRoute = () => {
-		const { selected } = this.props;
-		return <Text>ChartsRoute for {selected['im:name']['label']}</Text>;
+	SongsRoute = () => {
+		const albumMedia = this.props.songs.map((entry, i) => {
+			if(i > 0){
+				var start = Date.now();
+				return (
+					<Animated.View
+						key={i}
+						style={{
+						width: '100%',
+						transform: [this.transformY()]
+						}}>
+						<ListItem
+						key={i}
+						icon
+						style={{ height: 70 }}>
+							<Left>
+								<Thumbnail square source={{uri: entry['artworkUrl100']}} />
+							</Left>
+							<Body style={{borderBottomWidth:0}}>
+								<Text style={{ fontSize: 14}}>{entry['trackName']}</Text>
+								<Text style={{ fontSize: 14}}>{entry['previewURL']}</Text>
+							</Body>
+							<Right style={{borderBottomWidth:0, height: 70}}>
+								<Text>Play Button</Text>
+							</Right>
+						</ListItem>
+					</Animated.View>
+				);
+			}
+		});
+		return(
+			<SafeAreaView>
+				<ScrollView
+				style={styles.scrollView}>
+					{albumMedia}
+				</ScrollView>
+			</SafeAreaView>
+		);
+	};
+	
+	HitsRoute = () => {
+		const artistMedia = this.props.hits.map((entry, i) => {
+			if(i > 0){
+				var start = Date.now();
+				return (
+					<Animated.View
+						key={i}
+						style={{
+						width: '100%',
+						transform: [this.transformY()]
+						}}>
+						<ListItem
+						key={i}
+						icon
+						style={{ height: 70 }}>
+							<Left>
+								<Thumbnail square source={{uri: entry['artworkUrl100']}} />
+							</Left>
+							<Body style={{borderBottomWidth:0}}>
+								<Text style={{ fontSize: 14}}>{entry['trackName']}</Text>
+								<Text style={{ fontSize: 14}}>{entry['previewURL']}</Text>
+							</Body>
+							<Right style={{borderBottomWidth:0, height: 70}}>
+								<Text>Play Button</Text>
+							</Right>
+						</ListItem>
+					</Animated.View>
+				);
+			}
+		});
+		return(
+			<SafeAreaView>
+				<ScrollView
+				style={styles.scrollView}>
+					{artistMedia}
+				</ScrollView>
+			</SafeAreaView>
+		);
 	};
 
     handleIndexChange = index => this.setState({ index });
 
 	renderScene = BottomNavigation.SceneMap({
 		info: this.InfoRoute,
-		library: this.LibraryRoute,
-		charts: this.ChartsRoute,
+		songs: this.SongsRoute,
+		hits: this.HitsRoute,
 	});
 
 	renderIcon = ({route, focused= false, color }) => {
-		const { selected } = this.props;
 		return <Icon color="#4A64AA" name={route.icon} size={28} />
 	};
 
@@ -64,7 +182,7 @@ class Selected extends PureComponent {
 			<View style={styles.root}>
 				<Appbar 
 					navigation={this.props.navigation} 
-					title="Selected Album"
+					title={this.props.selected['im:name']['label']}
                     hasBackAction={true}
                     hasMenu={true}
 				/>
@@ -81,15 +199,25 @@ class Selected extends PureComponent {
 	}
 }
 
+Selected.propTypes = {
+	selected: PropTypes.array,
+	songs: PropTypes.array,
+	hits: PropTypes.array
+}
+
 const mapStateToProps = (state, ownProps) => {
 	return {
+		//improve
 		selected: ownProps.route["params"]["selected"],
-		navigation: ownProps.navigation
+		navigation: ownProps.navigation,
+		songs: state.selected.songs,
+		hits: state.selected.hits
 	};
 };
 
 const mapDispatchToProps = {
-    //...load more metadata
+	getSongs,
+	getHits
 };
 
 const styles = StyleSheet.create({
@@ -106,11 +234,17 @@ const styles = StyleSheet.create({
 		color:"#4A64AA",
 		alignSelf:"center"
 	},
-    info: {
+    InfoRoute: {
+		flex:1,
+		alignContent: "center"
     },
-    library: {
-    },
-    chart:{
+    LibraryRoute: {
+		flex:1,
+		flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'stretch',
+	},
+    ChartRouteWrapper:{
 	},
 });
 

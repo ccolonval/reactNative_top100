@@ -2,7 +2,6 @@ import{ GET_DATA_FEED } from '../core/types';
 
 import axios from "axios";
 
-//improve loading url
 export const getDataFeed = () => async (dispatch, getState) => {
 	const response = await axios.get("https://itunes.apple.com/us/rss/topalbums/limit=100/json");
 	dispatch({

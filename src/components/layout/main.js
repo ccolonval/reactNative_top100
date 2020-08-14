@@ -9,8 +9,17 @@ import {
 	Easing
   } from 'react-native';
 
-import { ListItem, Left, Body, Right, Icon, Text, Thumbnail, Badge } from "native-base";
+import { 
+	ListItem,
+	Left, 
+	Body, 
+	Right, 
+	Text, 
+	Thumbnail, 
+	Badge 
+} from "native-base";
 import { View } from 'react-native-animatable';
+
 import PropTypes from 'prop-types';
 import Appbar from '../shared/appbar';
 import { getDataFeed } from "../../actions/main";
@@ -26,7 +35,7 @@ class Main extends PureComponent {
 
 	state = {...initialState}
 
-	componentDidMount = async()=>{
+	componentDidMount = async() => {
 		this.props.getDataFeed();
 		Animated.timing(this.state.animateItem, {
 			toValue: 1,
@@ -100,8 +109,7 @@ class Main extends PureComponent {
 				<StatusBar barStyle="dark-content" />
 				<Appbar 
 					navigation={this.props.navigation}
-					title="Top 100"
-				/>
+					title="Top 100"/>
 				<Button
 					icon="refresh"
 					//try to unload list items prior to getting again
@@ -126,11 +134,10 @@ Main.propTypes = {
 }
 
 const mapStateToProps = (state, ownProps) => {
-	let filtered = Array.from(state.main.dataFeed);
 	return {
 		loading: state.main.loading,
 		dataFeed: state.main.dataFeed,
-		filteredDataFeed : filtered,
+		filteredDataFeed : Array.from(state.main.dataFeed),
 		query: "",
 		navigation: ownProps.navigation
 	};
