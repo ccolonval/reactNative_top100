@@ -5,17 +5,21 @@ JSON URL: https://itunes.apple.com/us/rss/topalbums/limit=100/json
 
 The application currently uses the following:
 
-- React Native Elements and React Native Paper for UI
+- React Native Elements and Native Base for UI
 - Redux Thunk for local/global state
 - React Native navigation libraries
 - Searching
 - Selected Album
 - Finalize UI layout
+- Finalize Metadata layout
 - Include New feature
 - Include API feed
-- Refreshes API feed
 - Include Animation
 
 # Pending:
-- Finalize Metadata display for selected album
 - Create and implement tests using Jest
+
+# Tidy-up:
+- Replace React Native Paper component with Native Base
+- Relocate List Component to its own file
+- Allow audio to play per ListItem
