@@ -11,9 +11,11 @@ The application currently uses the following:
 - Searching
 - Selected Album
 - Finalize UI layout
-- New feature
-- include API feed
+- Include New feature
+- Include API feed
+- Refreshes API feed
+- Include Animation
 
 # Pending:
-- Finalize UI layout for selected album
+- Finalize Metadata display for selected album
 - Create and implement tests using Jest
