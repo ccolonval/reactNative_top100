@@ -7,10 +7,13 @@ import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
+import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-
+import java.util.Arrays;
+import com.reactnativecommunity.rctaudiotoolkit.AudioPackage;
+import com.brentvatne.react.ReactVideoPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -24,10 +27,25 @@ public class MainApplication extends Application implements ReactApplication {
         @Override
         protected List<ReactPackage> getPackages() {
           @SuppressWarnings("UnnecessaryLocalVariable")
+          
           List<ReactPackage> packages = new PackageList(this).getPackages();
+          return packages;
+
+          //original
+          /*
+          List<ReactPackage> packages = new PackageList(this).getPackages();
+          return packages;
+          */
+          //trial
+          /*
+          return Arrays.<ReactPackage>asList(
+              new MainReactPackage(),
+              new AudioPackage() 
+          );
+          */
+
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new ReactNativeConfigPackage());
-          return packages;
         }
 
         @Override

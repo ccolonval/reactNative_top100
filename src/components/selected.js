@@ -7,7 +7,9 @@ import {
 	ScrollView,
 	Image,
 	Animated,
-	Easing
+	Easing,
+	TouchableOpacity,
+	TouchableHighlight
 } from 'react-native';
 
 import { 
@@ -25,8 +27,11 @@ import PropTypes from 'prop-types';
 import Appbar from './shared/appbar';
 import { getSongs, getHits } from '../actions/selected';
 import { View } from 'react-native-animatable';
-import { BottomNavigation} from 'react-native-paper';//remove, simplify with 1 UI library if possible
+import { BottomNavigation, Colors } from 'react-native-paper';//remove, simplify with 1 UI library if possible
 import { Icon } from 'react-native-elements';//use native-base
+
+import { Player, Recorder, MediaStates } from '@react-native-community/audio-toolkit';
+import Video from 'react-native-video';
 
 const initialState = {
     index: 0,
@@ -37,7 +42,11 @@ const initialState = {
 	],
 	songs : [],
 	hits: [],
-	animateItem : new Animated.Value(0)
+	paused: true ,
+	animateItem : new Animated.Value(0),
+	player: {},
+	disabled: false,
+	playerIcon: "play-arrow"
 };
 
 class Selected extends PureComponent {
@@ -65,6 +74,26 @@ class Selected extends PureComponent {
 		  })
 		}
 	  }
+
+	playPause = (entry) => {
+		let { paused, player, playerIcon } = this.state;
+		console.log(JSON.stringify(player))
+		if(paused){
+			//toggele animation, auto destroy object when trackSample finishes playing or navigation is engaged
+			player = new Player(entry.previewUrl,{
+				autoDestroy: true
+			}).play();
+			paused = false;
+			playerIcon = "play-arrow";
+		}
+		else{
+			player.destroy();
+			player = {};
+			paused = true;
+			playerIcon = "stop";
+		}
+		this.setState({paused, player, playerIcon});
+	}
 	  
 	InfoRoute = () => {
 		return(
@@ -82,6 +111,8 @@ class Selected extends PureComponent {
 	};
 
 	SongsRoute = () => {
+		let { paused, playerIcon } = this.state;
+		console.log("paused "+ paused);
 		const albumMedia = this.props.songs.map((entry, i) => {
 			if(i > 0){
 				var start = Date.now();
@@ -95,7 +126,8 @@ class Selected extends PureComponent {
 						<ListItem
 						key={i}
 						icon
-						style={{ height: 70 }}>
+						style={{ height: 70 }}
+						onPress={() => this.playPause(entry)}>
 							<Left>
 								<Thumbnail square source={{uri: entry['artworkUrl100']}} />
 							</Left>
@@ -103,8 +135,15 @@ class Selected extends PureComponent {
 								<Text style={{ fontSize: 14}}>{entry['trackName']}</Text>
 								<Text style={{ fontSize: 14}}>{entry['previewURL']}</Text>
 							</Body>
-							<Right style={{borderBottomWidth:0, height: 70}}>
-								<Text>Play Button</Text>
+							<Right style={{borderBottomWidth:0, height: 70, width: 20}}>
+								{!paused ?
+									<View style={styles.playerButton}>
+										<Icon name="stop"/>
+									</View>:
+									<View style={styles.playerButton}>
+										<Icon name="play-arrow"/>
+									</View>
+								}
 							</Right>
 						</ListItem>
 					</Animated.View>
@@ -122,7 +161,9 @@ class Selected extends PureComponent {
 	};
 	
 	HitsRoute = () => {
-		const artistMedia = this.props.hits.map((entry, i) => {
+		let { paused, playerIcon } = this.state;
+		console.log("paused "+ paused);
+		const artistMedia = this.props.hits.map((hit, i) => {
 			if(i > 0){
 				var start = Date.now();
 				return (
@@ -135,16 +176,24 @@ class Selected extends PureComponent {
 						<ListItem
 						key={i}
 						icon
-						style={{ height: 70 }}>
+						style={{ height: 70 }}
+						onPress={() => this.playPause(hit)}>
 							<Left>
-								<Thumbnail square source={{uri: entry['artworkUrl100']}} />
+								<Thumbnail square source={{uri: hit['artworkUrl100']}} />
 							</Left>
 							<Body style={{borderBottomWidth:0}}>
-								<Text style={{ fontSize: 14}}>{entry['trackName']}</Text>
-								<Text style={{ fontSize: 14}}>{entry['previewURL']}</Text>
+								<Text style={{ fontSize: 14}}>{hit['trackName']}</Text>
+								<Text style={{ fontSize: 14}}>{hit['previewURL']}</Text>
 							</Body>
-							<Right style={{borderBottomWidth:0, height: 70}}>
-								<Text>Play Button</Text>
+							<Right style={{borderBottomWidth:0, height: 70, width: 20}}>
+								{!paused ?
+									<View style={styles.playerButton}>
+										<Icon name="stop"/>
+									</View>:
+									<View style={styles.playerButton}>
+										<Icon name="play-arrow"/>
+									</View>
+								}
 							</Right>
 						</ListItem>
 					</Animated.View>
@@ -200,7 +249,7 @@ class Selected extends PureComponent {
 }
 
 Selected.propTypes = {
-	selected: PropTypes.array,
+	selected: PropTypes.object,
 	songs: PropTypes.array,
 	hits: PropTypes.array
 }
@@ -245,6 +294,16 @@ const styles = StyleSheet.create({
         alignItems: 'stretch',
 	},
     ChartRouteWrapper:{
+	},
+	playerButton: {
+		height: 72,
+		width: 72,
+		borderWidth: 1,
+		borderColor: 'white',
+		backgroundColor: Colors.purple300,
+		borderRadius: 72 / 2,
+		alignItems: 'center',
+		justifyContent: 'center',
 	},
 });
 

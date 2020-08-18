@@ -18,6 +18,7 @@ import {
 	Thumbnail, 
 	Badge 
 } from "native-base";
+
 import { View } from 'react-native-animatable';
 
 import PropTypes from 'prop-types';
